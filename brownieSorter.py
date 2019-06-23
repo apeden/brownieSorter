@@ -5,8 +5,8 @@ class Brownie(object):
         self.name = name
         self.friends =[]
         self.popularity = 0
-    def getPupularity(self, friend):
-        self.friends += friend 
+    def getPopularity(self):
+        return self.popularity
     def addFriend(self, friend):
         self.friends += friend 
     def dimensionality(self):
@@ -24,9 +24,9 @@ class Brownie(object):
         return self.name
     def popularityWith(self, otherBrownies):
         for otherBrownie in otherBrownies:
-            if selfname == otherBrownie.getName():
+            if self.name == otherBrownie.getName():
                 continue
-            self.popularity += bonding(otherBrownie)
+            self.popularity += self.bonding(otherBrownie)
     def toStr(self):
         return self.name + str(self.friends)
     def __str__(self):
@@ -121,10 +121,9 @@ for name in BROWNIES:
     list_copy.remove(name)
     b.addFriend (random.sample(list_copy, 2))
     brownie_list.append(b)
+    first_camp.addBrownie(b)
     
-for elem in brownie_list[1:]:
-    bond = brownie_list[0].bonding(elem)
-    print(elem.getName()+ " and "+ brownie_list[0].getName()+ " have a bond of   " + str(bond))
+
 
 
 def test0(numClusters = 4, printSteps = False,
@@ -151,9 +150,25 @@ def test0(numClusters = 4, printSteps = False,
         print ('  C' + str(index) + ':', c)
         index += 1
 
+for b1 in first_camp.getBrownies():
+    b1.popularityWith(first_camp.getBrownies())
+    print("\n"+b1.getName() + " Popularity: " + \
+          str(b1.getPopularity()))
+    bondings = []    
+    for b2 in brownie_list:
+        if b1 == b2:
+            bondings.append("n")
+        else:
+            bondings.append((b1.bonding(b2)))
+    print(bondings)
 
 
-
+for brownie in first_camp.getBrownies():
+    brownie.popularityWith(brownie_list)
+    print ("\n" + brownie.getName() + " has a popularity of " \
+          + str(brownie.getPopularity()))
 
 #for i in range(len(brownie_list)):
+#    for brownie in first_camp.getTents()[1+(i%4)]
+        
 
