@@ -5,10 +5,17 @@ class Brownie(object):
         self.name = name
         self.friends =[]
         self.popularity = 0
+        self.happiness = 0
     def getPopularity(self):
         return self.popularity
     def addFriend(self, friend):
-        self.friends += friend 
+        self.friends.append(friend)
+    def setHappiness(self, deltaHapp):
+        self.happiness += deltaHapp
+    def getHappiness(self):
+        return self.happiness
+    def reZeroHapp(self):
+        self.happiness = 0
     def dimensionality(self):
         return len(self.friends)
     def getFriends(self):
@@ -29,23 +36,23 @@ class Brownie(object):
                 continue
             self.popularity += self.bonding(otherBrownie)
     def toStr(self):
-        return self.name + str(self.friends)
+        return self.name + str(self.happiness)
     def __str__(self):
-        return self.name + " has frients "+ str(self.friends)
+        return self.name + " has friends "+ str(self.friends)
 
 class Tent(object):
     def __init__(self, num, capacity = 6):
         self.num = num
         self.capacity = capacity
         self.brownies = []
-        self.brownie_names = ()
+        self.brownie_profiles = ()
         self.happiness = 0
     def getNum(self):
         return self.num
     def getCapacity(self):
         return self.capacity 
     def addBrownie(self, brownie):
-        if len(self.brownies) < 6:
+        if len(self.brownies) < self.capacity:
             self.brownies.append(brownie)
         else:
             print("Tent full, can't add "+ str(brownie))
@@ -61,18 +68,23 @@ class Tent(object):
         return favIndex
     def setHappiness(self):
         self.happiness = 0
-        for b1 in self.brownies:
-            for b2 in self.brownies:
+        toAssess = self.brownies[:]
+        while len(toAssess) > 0:
+            b1 = toAssess.pop()
+            for b2 in toAssess:
                 if b1.getName() in b2.getFriends():
+                    b1.setHappiness(1)
                     self.happiness += 1
                 if b2.getName() in b1.getFriends():
+                    b1.setHappiness(1)
                     self.happiness += 1
     def getHappiness(self):
         return self.happiness
     def __str__(self):
         for brownie in self.brownies:
-            self.brownie_names += (brownie.getName(),)
-        return str(self.num) + ": "+ str(self.brownie_names)\
+            self.brownie_profiles += (brownie.getName()\
+                                      +": "+str(brownie.happiness),)
+        return str(self.num) + ": "+ str(self.brownie_profiles)\
                + " Happiness: "+ str(self.getHappiness()) 
 
 class Camp(object):
@@ -90,15 +102,13 @@ class Camp(object):
     def setTents(self, tent):
         if len(self.tents) < self.num_tents:
             self.tents.append(tent)
-    def resetTents(self):
-        self.tents = []
     def getTents(self):
         return self.tents
     def addBrownie(self,brownie):
         self.allBrownies.append(brownie)
         self.availBrownies = self.allBrownies[:]
-    def resetAvailBrownies(self):
-        self.availBrownies = self.allBrownies[:]
+    def getAllBrownies(self):
+        return self.allBrownies
     def getAvailBrownies(self):
         return self.availBrownies
     def getBrownie(self,brownie):
@@ -131,7 +141,7 @@ class Camp(object):
     def voteFill(self):
         i = 0
         while len(self.availBrownies)> 0:
-            tentNum = (i%4)
+            tentNum = (i%self.num_tents)
             tent =self.tents[tentNum]
             favIndex = tent.favIndex(self.availBrownies)
             tent.addBrownie(self.availBrownies.pop(favIndex))
@@ -143,7 +153,7 @@ class Camp(object):
             self.setTents(t)
         i = 0
         while len(self.availBrownies)> 0:
-            tentNum = (i%4)
+            tentNum = (i%self.num_tents)
             tent = self.tents[tentNum]
             randomIndex = random.choice(range(len(self.availBrownies)))
             tent.addBrownie(self.availBrownies.pop(randomIndex))
@@ -184,81 +194,86 @@ BROWNIES = ["Anna",
 "Vanessa",
 "Winnie",
 "Xa"]
-
-#first_camp  = Camp ("first")
-#print (first_camp.getTents())
-#print (first_camp )
-#brownie_list = []
-
-def addNamesFrom(brownie_list, camp):
-    for name in brownie_list:
-        b = Brownie(name)
-        list_copy = BROWNIES[:]
-        list_copy = list_copy + [None,None,None]
-        list_copy.remove(name)
-        b.addFriend (random.sample(list_copy, 2))
-        camp.addBrownie(b)
-    
-def test0(numClusters = 4, printSteps = False,
-          printHistory = True):
-    cS = BrownieClusterSet()
-    for p in brownie_list:
-        cS.add(BrownieCluster([p]))
-    history = cS.mergeN(BrownieCluster.maxBond, numClusters, toPrint = printSteps)
-    if printHistory:
-        print ('')
-        for i in range(len(history)):
-            names1 = []
-            for p in history[i][0].members():
-                names1.append(p.getName())
-            names2 = []
-            for p in history[i][1].members():
-                names2.append(p.getName())
-            print ('Step', i, 'Merged', names1, 'with', names2)
-            print ('')
-    clusters = cS.getBrownieClusters()
-    print ('Final set of clusters:')
-    index = 0
-    for c in clusters:
-        print ('  C' + str(index) + ':', c)
-        index += 1
-
-
-
-#calculate popularities
-##for b in first_camp.getBrownies():
-##    b.popularityWith(first_camp.getBrownies())
-##for b in first_camp.getBrownies():
-##    print(b.getPopularity())
-
-#first_camp.setPopularities()
-#first_camp.seedTents()
-#first_camp.completeTents()
-
-
-first_camp  = Camp ("first")
-addNamesFrom(BROWNIES, first_camp)
-
-def happTrial(numTrials, camp, method):
-    happList = []
-    for x in range(numTrials):
-        camp.resetTents()
-        camp.resetAvailBrownies()
-        camp.setPopularities()
-        method()   
-        camp.setHappiness()
-        #for tent in camp.getTents():print(tent)
-        happList.append(first_camp.getHappiness())
-        sumHapp = 0
-        for happ in happList:
-            sumHapp += happ
-    print(happList, "Mean ", str(sumHapp/len(happList)))
-
-print("Random: ")
-happTrial(10, first_camp, first_camp.randomTents)
-
-print("Seed tents with most popular, then vote: ")
-happTrial(10, first_camp, first_camp.seedTents)
+class Organiser(object):
+    def __init__(self, file = None):
+        if not file == None:
+            self.file = file
+        self.brownies = []
+        self.friendlist = []
+        self.brownieObjs = []
+    def readFile(self):
+        try:
+            f = open(self.file)
+        except:
+            print("Error opening brownie file")
+        inFile = open(self.file)
+        for l in inFile:
+            try:              
+                brownieAndFriends = l.rstrip('\n').split(',')
+                self.friendlist.append(brownieAndFriends)
+            except:
+                print("Error reading line")
+    def addNamesFrom(self, brownie_list):
+        self.brownieObjs = []
+        for name in brownie_list:
+            list_copy = brownie_list[:]
+            list_copy = list_copy + [None,None,None]
+            list_copy.remove(name)
+            b = Brownie(name)
+            b.addFriend (random.sample(list_copy, 1))
+            b.addFriend (random.sample(list_copy, 1))
+            self.brownieObjs.append(b)
+    def are_brownies(self, friend_list):
+        for friend in friend_list:
+            if not friend in self.brownies:
+                print (friend + " is not a named brownie")
+                return False
+        return True
+    def addBrownies(self):
+        self.brownieObjs = []
+        self.brownies = []
+        for brownieAndFriends in self.friendlist:
+            self.brownies.append(brownieAndFriends[0])
+        for brownieAndFriends in self.friendlist:
+            b = Brownie(brownieAndFriends[0])
+            if self.are_brownies(brownieAndFriends[1:]):
+                for friend in brownieAndFriends[1:]:
+                    b.addFriend(friend)
+            else:
+                print ("A friend of "+ brownieAndFriends[0] \
+                       + " is not listed as brownie: " \
+                       + str(brownieAndFriends[1:]))
+                raise
+            self.brownieObjs.append(b)
+    def happTrial(self, numTrials):
+        happList = []
+        camps = [] 
+        for x in range(numTrials):
+            self.addBrownies()
+            camp  = Camp (str(x))
+            for brownie in self.brownieObjs:
+                camp.addBrownie(brownie)
+            camp.setPopularities()
+            camp.randSeedTents()  
+            camp.setHappiness()
+            happList.append(camp.getHappiness())
+            camps.append(camp)
+            sumHapp = 0
+            for happ in happList:
+                sumHapp += happ
+            maxHap = max(happList)
+            maxIndex = happList.index(maxHap)
+            bestTents = camps[maxIndex].getTents()
+        print("NumTrials = ", str(numTrial),
+              " Max: ", str(maxHap))
+        #for brownie in camps[maxIndex].getAllBrownies():
+            #print(brownie)
+        for tent in bestTents:
+            print(tent)
 
 print("Seed tents with random, then vote: ")
-happTrial(10, first_camp, first_camp.randSeedTents)
+#brownies = addNamesFrom(BROWNIES)
+o = Organiser("real_brownies.txt")
+o.readFile()
+for numTrial in 10,100,1000,10000:
+    o.happTrial(numTrial)
