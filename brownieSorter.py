@@ -14,10 +14,6 @@ class Brownie(object):
         self.happiness += deltaHapp
     def getHappiness(self):
         return self.happiness
-    def reZeroHapp(self):
-        self.happiness = 0
-    def dimensionality(self):
-        return len(self.friends)
     def getFriends(self):
         return self.friends
     def bonding(self, other):
@@ -68,18 +64,21 @@ class Tent(object):
         return favIndex
     def setHappiness(self):
         self.happiness = 0
-        toAssess = self.brownies[:]
-        while len(toAssess) > 0:
-            b1 = toAssess.pop()
-            for b2 in toAssess:
+        for b1 in self.brownies:
+            for b2 in self.brownies:
+                if b1 == b2:
+                    continue
                 if b1.getName() in b2.getFriends():
                     b1.setHappiness(1)
                     self.happiness += 1
-                if b2.getName() in b1.getFriends():
-                    b1.setHappiness(1)
-                    self.happiness += 1
+                for friend in b1.getFriends():
+                    if friend == b2.getName():
+                        b1.setHappiness(1)
+                        self.happiness += 1
     def getHappiness(self):
         return self.happiness
+    def getBrownies(self):
+        return self.brownies
     def __str__(self):
         for brownie in self.brownies:
             self.brownie_profiles += (brownie.getName()\
@@ -94,7 +93,8 @@ class Camp(object):
         self.tents = []
         self.allBrownies = []
         self.availBrownies = []
-        self.happiness = 0    
+        self.happiness = 0
+        self.minimumHapp = 0
     def getName(self):
         return self.name
     def getNumTents(self):
@@ -121,9 +121,13 @@ class Camp(object):
             b1.popularityWith(self.availBrownies)
     def returnPopularity(self, brownie):
         return brownie.getPopularity()
-    def seedTents(self):       
-        self.availBrownies.sort(key = self.returnPopularity,
-                                reverse = True)
+    def seedByPop(self, reverse = True):
+        if reverse == True:
+            self.availBrownies.sort(key = self.returnPopularity,
+                                    reverse = True)
+        else:
+            self.availBrownies.sort(key = self.returnPopularity,
+                                    reverse = False)
         for i in range(self.num_tents):
             t = Tent(i)
             t.addBrownie(self.availBrownies.pop(0))
@@ -165,6 +169,12 @@ class Camp(object):
             self.happiness += tent.getHappiness()
     def getHappiness(self):
         return self.happiness
+    def setMinimumHapp(self):
+        minHapp = self.tents[0].brownie[0].getHappiness()
+        for tent in self.tents:
+            for brownie in tent.getBrownies():
+                if brownie.getHappiness() < minHapp:
+                    minHapp = brownie.getHappiness()                    
     def getTents(self):
         return self.tents
     def __str__(self):
@@ -246,34 +256,50 @@ class Organiser(object):
                 raise
             self.brownieObjs.append(b)
     def happTrial(self, numTrials):
-        happList = []
         camps = [] 
         for x in range(numTrials):
             self.addBrownies()
             camp  = Camp (str(x))
             for brownie in self.brownieObjs:
                 camp.addBrownie(brownie)
-            camp.setPopularities()
-            camp.randSeedTents()  
+            #camp.setPopularities()
+            camp.randSeedTents()
             camp.setHappiness()
-            happList.append(camp.getHappiness())
             camps.append(camp)
+            maxHappCamp = max(camps, key =lambda x:x.happiness)
+            maxHapp =  maxHappCamp.getHappiness()
+            maxHappCamps = []
+            for camp in camps:
+                if camp.getHappiness() == maxHapp:
+                    maxHappCamps.append(camp)
             sumHapp = 0
-            for happ in happList:
-                sumHapp += happ
-            maxHap = max(happList)
-            maxIndex = happList.index(maxHap)
-            bestTents = camps[maxIndex].getTents()
+            for camp in camps:
+                sumHapp += camp.getHappiness()
+            meanHap = sumHapp/len(camps)
+            sumSq = 0
+            varHap = 0.0
+            for camp in camps:
+                 sumSq += (camp.getHappiness()-meanHap)**2
+            varHap = (sumSq/len(camps))
+            for i in range(5):
+                print (maxHappCamps[i].getTent())
+            #maxIndex = happList.index(maxHapp)
+            #bestTents = camps[maxIndex].getTents()
+        print("Number of maximally happiness camps: ", len(maxHappCamps))
         print("NumTrials = ", str(numTrial),
-              " Max: ", str(maxHap))
+              " Max: ", str(maxHapp),
+              " Mean: ", str(meanHap),
+              " Variance: ", str(varHap),)
         #for brownie in camps[maxIndex].getAllBrownies():
             #print(brownie)
         for tent in bestTents:
             print(tent)
+    def __str__(self):
+        return str(self.friendlist)
 
 print("Seed tents with random, then vote: ")
 #brownies = addNamesFrom(BROWNIES)
 o = Organiser("real_brownies.txt")
 o.readFile()
-for numTrial in 10,100,1000,10000:
+for numTrial in 1,10,100,1000,10000:
     o.happTrial(numTrial)
