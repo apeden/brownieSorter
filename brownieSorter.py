@@ -38,9 +38,8 @@ class Brownie(object):
         return self.name + " has friends "+ str(self.friends)
 
 class Tent(object):
-    def __init__(self, num, capacity = 6):
+    def __init__(self, num):
         self.num = num
-        self.capacity = capacity
         self.brownies = []
         self.brownie_profiles = ()
         self.happiness = 0
@@ -49,10 +48,7 @@ class Tent(object):
     def getCapacity(self):
         return self.capacity 
     def addBrownie(self, brownie):
-        if len(self.brownies) < self.capacity:
-            self.brownies.append(brownie)
-        else:
-            print("Tent full, can't add "+ str(brownie))
+        self.brownies.append(brownie)
     def favIndex(self, otherBrownies):
         favIndex, topBond = 0,0
         for i in range(len(otherBrownies)):
@@ -170,6 +166,15 @@ class Camp(object):
             self.happiness += tent.getHappiness()
     def getHappiness(self):
         return self.happiness
+    def getRangeHapp(self):
+        max = self.tents[0].getHappiness()
+        min = self.tents[0].getHappiness()
+        for tent in self.tents:
+            if tent.getHappiness() > max:
+                max == tent.getHappiness()
+            elif tent.getHappiness() < min:
+                min == tent.getHappiness()
+        return max-min
     def setMinHapp(self):
         minHapp = self.tents[0].brownies[0].getHappiness()
         for tent in self.tents:
@@ -209,13 +214,15 @@ BROWNIES = ["Anna",
 "Winnie",
 "Xa"]
 class Organiser(object):
-    def __init__(self, file = None):
+    def __init__(self, file = None, numTents = 4, capacity = 6):
         if not file == None:
             self.file = file
         self.brownies = []
         self.friendlist = []
         self.brownieObjs = []
-        self.camps = [] 
+        self.camps = []
+        self.numTents = numTents
+        self.capacity = capacity
     def readFile(self):
         try:
             f = open(self.file)
@@ -264,7 +271,7 @@ class Organiser(object):
         self.camps = []    
         for x in range(numTrials):
             self.addBrownies()
-            camp  = Camp (str(x))
+            camp  = Camp (str(x), self.numTents)
             for brownie in self.brownieObjs:
                 camp.addBrownie(brownie)
             #seed tents with random brownies
@@ -275,42 +282,54 @@ class Organiser(object):
             #calc min happiness of brownie in camp
             camp.setMinHapp()
             self.camps.append(camp)
-        #find maximal happiness within the set of camps
+        
+        def filt(camp_list, method, standard):
+            filt_list = []
+            for camp in camp_list:
+                if method(camp) == standard:
+                    filt_list.append(camp)
+            return filt_list        
+        #filter alternative camps to maximise camp happiness
+        print("Number of camps before filtering: ", len(self.camps))
         maxHappCamp = max(self.camps,
                               key =lambda x:x.getHappiness())
         maxHapp =  maxHappCamp.getHappiness()
-        #generate list of maximally happy camps
-        #at same time gather data for brownie versus camp happiness
-        #also find maximum Minimum happiness
-        maxHappCamps, campHapp, minBrownHapp = [],[],[]
-        maxMinBrownHapp = 0
-        for camp in self.camps:
-            campHapp.append(camp.getHappiness())
-            minBrownHapp.append(camp.getMinHapp())
-            if camp.getMinHapp() > maxMinBrownHapp:
-                maxMinBrownHapp = camp.getMinHapp() 
-            if camp.getHappiness() == maxHapp:
-                maxHappCamps.append(camp)    
+        filtered_camps = filt(self.camps, Camp.getHappiness, maxHapp)
+        print("filtered for camp happiness: ", len(filtered_camps))
+        #filter to minimize individual brownie unhappiness
+        maxMinBrownHappCamp = max(self.camps,
+                              key = lambda x:x.getMinHapp())      
+        maxMinBrownHapp = maxMinBrownHappCamp.getMinHapp()
+        filtered_camps = filt(filtered_camps,
+                              camp.getMinHapp,
+                              maxMinBrownHapp)
+        #filter to minimize variation in tent happiness
+        minRangeHappCamp = min(self.camps,
+                              key = lambda x:x.getRangeHapp())
+        minRangeHapp = minRangeHappCamp.getRangeHapp()
+        filtered_camps = filt(filtered_camps,
+                              camp.getRangeHapp,
+                              minRangeHapp)
         print ("Maximum minimum brownie happiness: ",
                str(maxMinBrownHapp))
-        print("Number of maximally happiness camps: ", len(maxHappCamps))
+        print("Number of optimal camps: ",
+              len(filtered_camps))
         print("NumTrials = ", str(numTrial),
               " Max: ", str(maxHapp))
         n = 0
-        for camp in maxHappCamps:
-            if camp.getMinHapp() == maxMinBrownHapp:
+        while n < 5:
+            try:
+                for tent in filtered_camps[n].getTents():
+                    print(tent)
                 n += 1
-                print("Minimum happiness: " \
-                      + str(camp.getMinHapp()))
-                for tent in camp.getTents():
-                    print(tent)                
-            if n == 5:
+            except:
                 break
+
     def __str__(self):
         return str(self.friendlist)
 
 print("Seed tents with random brownies, then vote: ")
-o = Organiser("real_brownies.txt")
+o = Organiser("real_brownies.txt", numTents = 3)
 o.readFile()
 print(o)
 for numTrial in 1000,:
