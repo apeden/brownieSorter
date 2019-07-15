@@ -4,7 +4,7 @@ import pylab
 class Brownie(object):
     def __init__(self, name):
         self.name = name
-        self.friends =[]
+        self.friends = []
         self.popularity = 0
         self.happiness = 0
     def getPopularity(self):
@@ -284,49 +284,76 @@ class Organiser(object):
             #calc min happiness of brownie in camp
             camp.setMinHapp()
             self.camps.append(camp)
-    def happTrial(self, numTrials):
-        self.setCamps(numTrials)      
-        happCamps, maxMinHappCamps, minRangeCamps  = [],[],[]
-        #filter alternative camps to maximise camp happiness
+    def happFilt(self):
+        happCamps = []
+        """filter alternative camps to maximise camp happiness
+        """
         maxHappCamp = max(self.camps,
                               key =lambda x:x.getHappiness())
         maxHapp =  maxHappCamp.getHappiness()
         for camp in self.camps:
             if camp.getHappiness() == maxHapp:
                 happCamps.append(camp)
-        print("Length after filtering for camp happiness "+str(len(happCamps)))
-        #filter to minimize individual brownie unhappiness
-        maxMinBrownHappCamp = max(happCamps,
+        self.camps = happCamps
+        print("max Happiness is "+str(maxHapp))
+        print("Length after filtering for camp happiness "
+              + str(len(self.camps)))
+    def maxMinBrownieHappFilt(self):
+        """filter camps to minimize individual brownie unhappiness
+        """
+        maxMinHappCamps = []
+        maxMinBrownHappCamp = max(self.camps,
                               key = lambda x:x.getMinHapp())      
         maxMinBrownHapp = maxMinBrownHappCamp.getMinHapp()
-        for camp in happCamps:
+        for camp in self.camps:
             if camp.getMinHapp() == maxMinBrownHapp:
                 maxMinHappCamps.append(camp)
+        self.camps = maxMinHappCamps
         print("max min brownie happiness is "+str(maxMinBrownHapp))
-        print("Length after filtering for brownie happiness "+str(len(happCamps)))    
-        #filter to minimize variation in tent happiness
-        minRangeHappCamp = min(maxMinHappCamps,
+        print("Length after filtering for brownie happiness "+str(len(self.camps)))
+    def rangeFilt(self):
+        """filter to minimize variation in tent happiness
+        """
+        minRangeCamps = []
+        minRangeHappCamp = min(self.camps,
                               key = lambda x:x.getRangeHapp())
         minRangeHapp = minRangeHappCamp.getRangeHapp()
-        for camp in maxMinHappCamps:
+        for camp in self.camps:
             if camp.getRangeHapp() == minRangeHapp:
                 minRangeCamps.append(camp)
+        self.camps = minRangeCamps
         print("minRangeHapp is ",str(minRangeHapp))
-        print("Length after filtering for tent range: ",str(len(minRangeCamps)))
-
-        print("NumTrials = ", str(numTrial),
-              " Max happiness: ", str(maxHapp))
-        print(minRangeCamps[0])
-        for tent in minRangeCamps[0].getTents():
+        print("Length after filtering for tent range: ",str(len(self.camps)))
+    def happTrial(self, numTrials, priority = None):
+        self.setCamps(numTrials)
+        filters = {1:self.happFilt,
+                   2:self.maxMinBrownieHappFilt,
+                   3:self.rangeFilt}    
+        if priority == None:
+            print("Prioritising camp happiness")
+            filter_order = [1,2,3]
+        elif priority == "brownie":
+            print("Prioritising no unhappy brownies")
+            filter_order = [2,1,3]
+        elif priority == "evenTents":
+            print("Prioritising evenly happy tents")
+            filter_order = [3,1,2]
+        for x in filter_order:
+            filters[x]()
+        print("NumTrials = ", str(numTrial))
+        print(self.camps[0])
+        for tent in self.camps[0].getTents():
             print(tent)
-
     def __str__(self):
-        return str(self.friendlist)
+        friends = ""
+        for line in self.friendlist:
+            friends += line[0].ljust(10, " ") + " likes " + str(line[1:]) + "\n" 
+        return friends
 
 print("Seed tents with random brownies, then vote: ")
 o = Organiser("brownies193.txt", numTents = 3)
 o.readFile()
 print(o)
 for numTrial in 10000,:
-    o.happTrial(numTrial)
+    o.happTrial(numTrial, "brownie")
 
