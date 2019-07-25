@@ -367,7 +367,7 @@ class CampOrganiser(object):
         print("Num alternative camps after filtering"
               + " to minimise range of tent happinesses: "
               + str(len(self.camps)))
-    def happTrial(self, numTrials, priority = "camp"):
+    def happTrial(self, numTrials, priority = None):
         """Find a good arrangement of brownies in tents
         by generating numTrials numbers of possible camps
         and then select an example of the best ones on
@@ -390,7 +390,7 @@ class CampOrganiser(object):
         filters = {1:self.happFilt,
                    2:self.maxMinBrownieHappFilt,
                    3:self.rangeFilt}    
-        if priority == "camp":
+        if priority == None:
             print("Prioritising camp happiness")
             filter_order = [1,2,3]
         elif priority == "brownie":
@@ -427,7 +427,7 @@ def sorter(file, numTents, numTrials = 10000, priority = None):
     o.happTrial(numTrials, priority)
 
 if __name__ == "__main__":
-    sorter("brownies193.txt", 4, priority = "brownie")
+    sorter("brownies193.txt", 4)
 
 
 
