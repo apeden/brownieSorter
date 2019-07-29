@@ -1,0 +1,405 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to brownieSort’s documentation! &#8212; brownieSort 0.0.3 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="All about me" href="all-about-me.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-browniesort-s-documentation">
+<h1>Welcome to brownieSort’s documentation!<a class="headerlink" href="#welcome-to-browniesort-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This is a project to create a module that sorts
+people (in this case brownies) into groups
+according to friendships as declared in a
+text (.txt0) file. Brownies names followed
+by a comma and then comma separated names of the
+friends of the said brownie are entered into
+the text file: e.g:</p>
+<blockquote>
+<div><p>Anna, Julie, Samantha
+Julie, Anna, Chloe, Jill
+Brioney, Claudia, Jennifer, Debs
+Debs</p>
+</div></blockquote>
+<p>In the above, Anna has declared two friends: Julie and Samantha.
+Julie has declared three, including the above named Anna.
+Debs has not declared any friends. In the text file, it is
+not permissible for a friend to be mentioned, who is not also
+the first name of a line somewhere in the file.</p>
+<p>Based on the friendship, the code sorts the friends into
+n groups of equal (or nearly equal) size. The aim is to
+achieve the happiest combinations of groups.</p>
+<span class="target" id="module-brownieSorter.camp"></span><p>Author: Alex Peden
+email:  <a class="reference external" href="mailto:apeden23&#37;&#52;&#48;gmail&#46;com">apeden23<span>&#64;</span>gmail<span>&#46;</span>com</a>
+July 2019</p>
+<p>A programme for sorting brownies* into groups (tents)
+of equal size according to friendships. Brownies and
+friendship choices are imported from a text file.
+An algorithm is run to find the optimal (or near best)
+groupings of brownies. The best camp can be printed to screen
+as a list of tents, their occupants, and the associated
+happiness scores.</p>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>in the UK, a brownie is a junior girl-guide (or junior
+girl-scout)</p>
+<dl class="class">
+<dt id="brownieSorter.camp.Brownie">
+<em class="property">class </em><code class="sig-prename descclassname">brownieSorter.camp.</code><code class="sig-name descname">Brownie</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Brownie" title="Permalink to this definition">¶</a></dt>
+<dd><p>A participant in a camp who has to share a tent
+(or be in a group) with other brownies. The happiness
+of this participant depends on whether the other participants
+she is grouped with are friends, mutual friends, or (non-
+reciprocated) admirers.</p>
+<dl class="method">
+<dt id="brownieSorter.camp.Brownie.addFriend">
+<code class="sig-name descname">addFriend</code><span class="sig-paren">(</span><em class="sig-param">friend</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Brownie.addFriend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add friend to friend list of this brownie.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Brownie.bonding">
+<code class="sig-name descname">bonding</code><span class="sig-paren">(</span><em class="sig-param">other</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Brownie.bonding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine bond of this brownie with another.
+If brownie likes other brownie, bond is 1.
+If other brownie also likes this brownie, bond is 2.
+If only other brownie likes this brownie, bond is 1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Brownie.getFriends">
+<code class="sig-name descname">getFriends</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Brownie.getFriends" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return names of brownies this brownie says she likes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Brownie.getHappiness">
+<code class="sig-name descname">getHappiness</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Brownie.getHappiness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return happiness score of this brownie</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Brownie.getName">
+<code class="sig-name descname">getName</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Brownie.getName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return name of brownie.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Brownie.setHappiness">
+<code class="sig-name descname">setHappiness</code><span class="sig-paren">(</span><em class="sig-param">deltaHapp</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Brownie.setHappiness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Increase happiness of this brownie by ‘deltaHapp’.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="brownieSorter.camp.Camp">
+<em class="property">class </em><code class="sig-prename descclassname">brownieSorter.camp.</code><code class="sig-name descname">Camp</code><span class="sig-paren">(</span><em class="sig-param">camp_name</em>, <em class="sig-param">num_tents=4</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp" title="Permalink to this definition">¶</a></dt>
+<dd><p>A camp of brownies that will comprise tents (
+groupings of brownies) each with ‘happiness’ scores
+that will depend on who they are sharing a tent with.</p>
+<dl class="method">
+<dt id="brownieSorter.camp.Camp.addBrownie">
+<code class="sig-name descname">addBrownie</code><span class="sig-paren">(</span><em class="sig-param">brownie</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp.addBrownie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add this brownie to the camp</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Camp.getHappiness">
+<code class="sig-name descname">getHappiness</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp.getHappiness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return camp happiness.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Camp.getMinHapp">
+<code class="sig-name descname">getMinHapp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp.getMinHapp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return happiness of least happy brownie in the camp.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Camp.getName">
+<code class="sig-name descname">getName</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp.getName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return name of camp.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Camp.getRangeHapp">
+<code class="sig-name descname">getRangeHapp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp.getRangeHapp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine difference between most happy
+and least happy tent in the camp.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Camp.getTents">
+<code class="sig-name descname">getTents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp.getTents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return tents</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Camp.randSeedTents">
+<code class="sig-name descname">randSeedTents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp.randSeedTents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Place one brownie at random in each of the
+empty tents. Then call voteFill() to fully
+populate the tents with brownies.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Camp.setHappiness">
+<code class="sig-name descname">setHappiness</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp.setHappiness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine happiness of the camp on basis of collective
+happinesses of the tents (in turn dependent on the
+happinesses of the brownies therein).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Camp.setMinHapp">
+<code class="sig-name descname">setMinHapp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp.setMinHapp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine happiness of least happy brownie in the camp.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Camp.setTents">
+<code class="sig-name descname">setTents</code><span class="sig-paren">(</span><em class="sig-param">tent</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Camp.setTents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a tent to the camp if the total will
+be less then or equal to that allowed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="brownieSorter.camp.CampOrganiser">
+<em class="property">class </em><code class="sig-prename descclassname">brownieSorter.camp.</code><code class="sig-name descname">CampOrganiser</code><span class="sig-paren">(</span><em class="sig-param">file=None</em>, <em class="sig-param">numTents=None</em>, <em class="sig-param">capacityTents=None</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.CampOrganiser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for finding for a camp a very good arrangement
+of brownies into equally-sized groups on the basis of
+friendships.</p>
+<p>Arrangments are made on the basis of the organiser
+declaring the number of tents (groups) OR their individual
+capacities (i.e. the size of the groups):
+The former will override the latter.</p>
+<dl class="method">
+<dt id="brownieSorter.camp.CampOrganiser.addBrownies">
+<code class="sig-name descname">addBrownies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.CampOrganiser.addBrownies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate list of brownie names with their chosen friends
+and a list of brownies (objects).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.CampOrganiser.are_brownies">
+<code class="sig-name descname">are_brownies</code><span class="sig-paren">(</span><em class="sig-param">friend_list</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.CampOrganiser.are_brownies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check all friends quoted by brownies are
+actually in the list of brownies coming to the
+camp.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.CampOrganiser.happTrial">
+<code class="sig-name descname">happTrial</code><span class="sig-paren">(</span><em class="sig-param">numTrials</em>, <em class="sig-param">priority=None</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.CampOrganiser.happTrial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a good arrangement of brownies in tents
+by generating numTrials numbers of possible camps
+and then select an example of the best ones on
+the basis of a ‘priority’.</p>
+<p>Keyword argument: priority (default = ‘camp’)</p>
+<p>If priority is ‘camp’ the selection process favours
+the camps with the overall highest happiness scores.</p>
+<p>A priority of ‘brownie’ aims the maximise the ‘happiness’
+of the least happy brownie in the camp.</p>
+<p>A priority of ‘evenTents’ tries to minimise the differences
+in ‘happiness scores’ between the tents.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.CampOrganiser.maxMinBrownieHappFilt">
+<code class="sig-name descname">maxMinBrownieHappFilt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.CampOrganiser.maxMinBrownieHappFilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter alternative camps
+to minimize individual brownie unhappiness.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.CampOrganiser.rangeFilt">
+<code class="sig-name descname">rangeFilt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.CampOrganiser.rangeFilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter alternative camps
+to minimize variation in tent happiness.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.CampOrganiser.readFile">
+<code class="sig-name descname">readFile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.CampOrganiser.readFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read in brownies and friends from a text file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.CampOrganiser.setCamps">
+<code class="sig-name descname">setCamps</code><span class="sig-paren">(</span><em class="sig-param">numTrials</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.CampOrganiser.setCamps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate numTrials alternative camps</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="brownieSorter.camp.Tent">
+<em class="property">class </em><code class="sig-prename descclassname">brownieSorter.camp.</code><code class="sig-name descname">Tent</code><span class="sig-paren">(</span><em class="sig-param">num</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Tent" title="Permalink to this definition">¶</a></dt>
+<dd><p>A kind of grouping (which may actually be a tent)
+which will contain brownies. It will have a happiness,
+set according to the friendship statuses of the occupant
+brownies.</p>
+<dl class="method">
+<dt id="brownieSorter.camp.Tent.addBrownie">
+<code class="sig-name descname">addBrownie</code><span class="sig-paren">(</span><em class="sig-param">brownie</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Tent.addBrownie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a brownie to this tent.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Tent.favIndex">
+<code class="sig-name descname">favIndex</code><span class="sig-paren">(</span><em class="sig-param">otherBrownies</em><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Tent.favIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the brownie in a list
+of brownies that is most favoured by the
+occupants of this tent.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Tent.getBrownies">
+<code class="sig-name descname">getBrownies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Tent.getBrownies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all brownies in the tent.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Tent.getCapacity">
+<code class="sig-name descname">getCapacity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Tent.getCapacity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the capacity of this tent.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Tent.getHappiness">
+<code class="sig-name descname">getHappiness</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Tent.getHappiness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return happiness of the tent.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Tent.getNum">
+<code class="sig-name descname">getNum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Tent.getNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returning the identifying  number of this tent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="brownieSorter.camp.Tent.setHappiness">
+<code class="sig-name descname">setHappiness</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#brownieSorter.camp.Tent.setHappiness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine happiness of this tent
+on the basis of declared friendships
+amungst the brownies.
+For example, if a brownie in the
+tent likes another brownie in the tent,
+this increases tent happiness by 1. If
+the other brownie likes them back, happiness is
+increased by not 1, but 2 etc.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="all-about-me.html">All about me</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">brownieSort</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="all-about-me.html">All about me</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="all-about-me.html" title="next chapter">All about me</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Alex Peden.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
