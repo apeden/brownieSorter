@@ -26,7 +26,7 @@ Based on the friendship, the code sorts the friends into
 n groups of equal (or nearly equal) size. The aim is to 
 achieve the happiest combinations of groups.
 
-.. automodule:: brownieSorter.camp
+.. automodule:: camp
     :members:
 
 .. toctree::
