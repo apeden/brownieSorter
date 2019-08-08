@@ -420,7 +420,13 @@ class CampOrganiser(object):
         return summary
 
 def sorter(file, numTents, numTrials = 10000, priority = None):
-    
+     """Analyse a file (txt) listing brownies and their friends.
+        sorts brownies into numTents tents by friendships, doing this
+        numTrials times. The happiest sortings are then found
+        by a process of filtering according to the priority. Default
+        priority maximises global camp happiness, "brownie" makes sure
+        there are no severely unhappy brownies in the final sorting
+        """
 
     o = CampOrganiser("brownies193.txt", numTents)
     print(o)
