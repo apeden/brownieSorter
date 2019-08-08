@@ -378,7 +378,7 @@ class CampOrganiser(object):
         If priority is 'camp' the selection process favours
         the camps with the overall highest happiness scores.
 
-        A priority of 'brownie' aims the maximise the 'happiness'
+        A priority of 'brownie' aims to maximise the 'happiness'
         of the least happy brownie in the camp.
 
         A priority of 'evenTents' tries to minimise the differences
