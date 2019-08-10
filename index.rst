@@ -8,7 +8,7 @@ Welcome to brownieSort's documentation!
 This is a project to create a module that sorts
 people (in this case brownies) into groups
 according to friendships as declared in a 
-text (.txt0) file. Brownies names followed
+text (.txt) file. Brownies names followed
 by a comma and then comma separated names of the 
 friends of the said brownie are entered into
 the text file: e.g::
