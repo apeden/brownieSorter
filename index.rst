@@ -11,7 +11,7 @@ according to friendships as declared in a
 text (.txt0) file. Brownies names followed
 by a comma and then comma separated names of the 
 friends of the said brownie are entered into
-the text file: e.g:
+the text file: e.g::
 	Anna, Julie, Samantha
 	Julie, Anna, Chloe, Jill
 	Brioney, Claudia, Jennifer, Debs
