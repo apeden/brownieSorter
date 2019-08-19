@@ -419,15 +419,17 @@ class CampOrganiser(object):
             summary += "\n" 
         return summary
 
-def sorter(file, numTents, numTrials = 10000, priority = None):
-    
-
-    o = CampOrganiser("brownies193.txt", numTents)
-    print(o)
+def sorter(file, numTents = None, capacityTents = None, numTrials = 10000, priority = None):
+    global o
+    o = CampOrganiser("brownies193.txt", numTents, capacityTents)
     o.happTrial(numTrials, priority)
 
+def showFriends():
+    print (o)
+
 if __name__ == "__main__":
-    sorter("brownies193.txt", 4)
+    sorter("brownies193.txt", capacityTents = 4)
+    showFriends()
 
 
 
