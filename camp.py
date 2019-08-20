@@ -1,3 +1,138 @@
+"""
+Author: Alex Peden
+email:  apeden23@gmail.com
+July 2019
+A programme for sorting brownies* into groups (tents)
+of equal size according to friendships. Brownies and
+friendship choices are imported from a text file.
+An algorithm is run to find the optimal (or near best)
+groupings of brownies. The best camp can be printed to screen
+as a list of tents, their occupants, and the associated
+happiness scores. 
+*in the UK, a brownie is a junior girl-guide (or junior
+girl-scout)
+"""
+
+import random
+import math
+
+class Brownie(object):
+    """A participant in a camp who has to share a tent
+    (or be in a group) with other brownies. The happiness
+    of this participant depends on whether the other participants
+    she is grouped with are friends, mutual friends, or (non-
+    reciprocated) admirers.
+    """
+    def __init__(self, name):
+        self.name = name
+        self.friends = []
+        self.happiness = 0
+    def addFriend(self, friend):
+        """Add friend to friend list of this brownie."""
+        self.friends.append(friend)
+    def setHappiness(self, deltaHapp):
+        """Increase happiness of this brownie by 'deltaHapp'."""
+        self.happiness += deltaHapp
+    def getHappiness(self):
+        """Return happiness score of this brownie"""
+        return self.happiness
+    def getFriends(self):
+        """Return names of brownies this brownie says she likes"""
+        return self.friends
+    def bonding(self, other):
+        """Determine bond of this brownie with another.
+        If brownie likes other brownie, bond is 1.
+        If other brownie also likes this brownie, bond is 2.
+        If only other brownie likes this brownie, bond is 1.
+        """
+        bond = 0
+        if self.name in other.friends:
+           bond += 1
+        if other.name in self.friends:
+           bond += 1
+        return bond
+    def getName(self):
+        """Return name of brownie."""
+        return self.name
+    def __str__(self):
+        """Print brownie name and friends."""
+        return self.name + " has friends "+ str(self.friends)
+
+class Tent(object):
+    """A kind of grouping (which may actually be a tent)
+    which will contain brownies. It will have a happiness,
+    set according to the friendship statuses of the occupant
+    brownies.
+    """
+    def __init__(self, num):
+        self.num = num
+        self.brownies = []
+        self.brownie_profiles = ()# brownie names and happinesses
+        self.happiness = 0
+    def getNum(self):
+        """Returning the identifying  number of this tent"""
+        return self.num
+    def getCapacity(self):
+        """Return the capacity of this tent."""
+        return self.capacity 
+    def addBrownie(self, brownie):
+        """Add a brownie to this tent.
+        """
+        self.brownies.append(brownie)
+    def favIndex(self, otherBrownies):
+        """Return the index of the brownie in a list
+        of brownies that is most favoured by the
+        occupants of this tent.
+        """
+        favIndex, topBond = 0,0
+        for i in range(len(otherBrownies)):
+            tentBond = 0
+            for brownie in self.brownies:
+                tentBond += brownie.bonding(otherBrownies[i])
+            if tentBond > topBond:
+                topBond = tentBond
+                favIndex = i
+        return favIndex
+    def setHappiness(self):
+        """Determine happiness of this tent
+        on the basis of declared friendships
+        amungst the brownies.
+        For example, if a brownie in the
+        tent likes another brownie in the tent,
+        this increases tent happiness by 1. If
+        the other brownie likes them back, happiness is
+        increased by not 1, but 2 etc. 
+        """
+        self.happiness = 0
+        for b1 in self.brownies:
+            for b2 in self.brownies:
+                if b1 == b2:
+                    continue
+                if b1.getName() in b2.getFriends():
+                    b1.setHappiness(1)
+                    self.happiness += 1
+                for friend in b1.getFriends():
+                    if friend == b2.getName():
+                        b1.setHappiness(1)
+                        self.happiness += 1
+    def getHappiness(self):
+        "Return happiness of the tent."""
+        return self.happiness
+    def getBrownies(self):
+        """Return all brownies in the tent."""
+        return self.brownies
+    def __str__(self):
+        """Print tent occupants and their happinesses"""
+        for brownie in self.brownies:
+            self.brownie_profiles += (brownie.getName().ljust(12, " ")\
+                                      +": "+str(brownie.happiness),)
+
+        summary = "Tent " + str(self.num + 1)+": "
+        summary += " Happiness: "+ str(self.getHappiness()) +"\n"
+        for profile in self.brownie_profiles:
+            summary += profile + "\n"
+        return summary
+
 class Camp(object):
     """A camp of brownies that will comprise tents (
     groupings of brownies) each with 'happiness' scores
